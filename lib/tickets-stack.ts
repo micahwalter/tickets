@@ -3,7 +3,6 @@ import { Construct } from 'constructs';
 
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as path from 'path';
 
 export class TicketsStack extends Stack {
@@ -27,11 +26,10 @@ export class TicketsStack extends Stack {
     // grant lambda permission to read/write to the dynamodb table
     ticketsTable.grantReadWriteData(ticketsFunction);
 
-
-    // API GW endpoint to allow creation of a new ticket
-    new apigateway.LambdaRestApi(this, 'tickets-apigw', {
-      handler: ticketsFunction,
+    // enable anonymous lambda function URL
+    const fnUrl = ticketsFunction.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
     });
-
+    
   }
 }

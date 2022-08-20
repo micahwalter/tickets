@@ -14,7 +14,7 @@ exports.handler = async (event) => {
     const params = {
         TableName: "tickets",
         Key: {
-            "partition": "a"
+            "partition": "us-east-1"
         },
         UpdateExpression: "SET hand_crafted_int = if_not_exists(hand_crafted_int, :start) + :inc",
 
@@ -26,14 +26,7 @@ exports.handler = async (event) => {
     };
 
     try {
-        switch (event.httpMethod) {
-            case "GET":
-                body = await dynamo.update(params)
-                .promise()
-                break;
-            default:
-                throw new Error(`Unsupported method "${event.httpMethod}"`);
-        }
+        body = await dynamo.update(params).promise()
     } catch (err) {
         statusCode = '400';
         body = err.message;
